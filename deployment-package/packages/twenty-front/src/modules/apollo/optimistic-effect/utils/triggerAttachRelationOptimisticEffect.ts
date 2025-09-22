@@ -1,0 +1,79 @@
+import { type ApolloCache, type StoreObject } from '@apollo/client';
+
+import { type RecordGqlRefEdge } from '@/object-record/cache/types/RecordGqlRefEdge';
+import { isObjectRecordConnectionWithRefs } from '@/object-record/cache/utils/isObjectRecordConnectionWithRefs';
+import { capitalize, isDefined } from 'twenty-shared/utils';
+
+export const triggerAttachRelationOptimisticEffect = ({
+  cache,
+  sourceObjectNameSingular,
+  sourceRecordId,
+  targetObjectNameSingular,
+  fieldNameOnTargetRecord,
+  targetRecordId,
+}: {
+  cache: ApolloCache<unknown>;
+  sourceObjectNameSingular: string;
+  sourceRecordId: string;
+  targetObjectNameSingular: string;
+  fieldNameOnTargetRecord: string;
+  targetRecordId: string;
+}) => {
+  const sourceRecordTypeName = capitalize(sourceObjectNameSingular);
+  const targetRecordTypeName = capitalize(targetObjectNameSingular);
+
+  const targetRecordCacheId = cache.identify({
+    id: targetRecordId,
+    __typename: targetRecordTypeName,
+  });
+
+  cache.modify<StoreObject>({
+    id: targetRecordCacheId,
+    fields: {
+      [fieldNameOnTargetRecord]: (targetRecordFieldValue, { toReference }) => {
+        const fieldValueIsObjectRecordConnectionWithRefs =
+          isObjectRecordConnectionWithRefs(
+            sourceObjectNameSingular,
+            targetRecordFieldValue,
+          );
+
+        const sourceRecordReference = toReference({
+          id: sourceRecordId,
+          __typename: sourceRecordTypeName,
+        });
+
+        if (!isDefined(sourceRecordReference)) {
+          return targetRecordFieldValue;
+        }
+
+        if (fieldValueIsObjectRecordConnectionWithRefs) {
+          const recordAlreadyExists = targetRecordFieldValue.edges.some(
+            (edge: RecordGqlRefEdge) =>
+              edge.node.__ref === sourceRecordReference.__ref,
+          );
+
+          if (recordAlreadyExists) {
+            return targetRecordFieldValue;
+          }
+
+          const nextEdges: RecordGqlRefEdge[] = [
+            ...targetRecordFieldValue.edges,
+            {
+              __typename: `${sourceRecordTypeName}Edge`,
+              node: sourceRecordReference,
+              cursor: '',
+            },
+          ];
+
+          return {
+            ...targetRecordFieldValue,
+            edges: nextEdges,
+          };
+        } else {
+          // To one object => attach next relation record
+          return sourceRecordReference;
+        }
+      },
+    },
+  });
+};

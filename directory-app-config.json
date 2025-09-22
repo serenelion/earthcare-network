@@ -1,0 +1,16 @@
+{
+  "name": "earthcare-directory",
+  "description": "EarthCare Business Directory",
+  "sourceType": "docker",
+  "dockerImage": "nginx:alpine",
+  "domains": [
+    "app.earthcare.network"
+  ],
+  "port": 80,
+  "volumeMounts": [
+    {
+      "hostPath": "/opt/earthcare-deployment/directory",
+      "containerPath": "/usr/share/nginx/html"
+    }
+  ]
+}

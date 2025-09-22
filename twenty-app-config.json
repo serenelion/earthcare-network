@@ -1,0 +1,26 @@
+{
+  "name": "twenty-crm",
+  "description": "Twenty CRM for EarthCare Network",
+  "sourceType": "docker",
+  "dockerImage": "twentyhq/twenty:latest",
+  "domains": [
+    "crm.app.earthcare.network",
+    "app.crm.app.earthcare.network"
+  ],
+  "env": {
+    "SERVER_URL": "https://crm.app.earthcare.network",
+    "FRONT_BASE_URL": "https://crm.app.earthcare.network",
+    "PG_DATABASE_URL": "postgres://twenty:${POSTGRES_PASSWORD}@postgres:5432/default",
+    "REDIS_URL": "redis://redis:6379",
+    "ACCESS_TOKEN_SECRET": "${APP_SECRET}",
+    "LOGIN_TOKEN_SECRET": "${APP_SECRET}",
+    "REFRESH_TOKEN_SECRET": "${APP_SECRET}",
+    "FILE_TOKEN_SECRET": "${APP_SECRET}",
+    "CORS_ALLOWED_ORIGINS": "https://crm.app.earthcare.network,https://app.crm.app.earthcare.network",
+    "IS_SIGN_UP_DISABLED": "false",
+    "SUPPORT_DRIVER": "none",
+    "MESSAGE_QUEUE_TYPE": "redis"
+  },
+  "port": 3000,
+  "healthCheck": "/healthz"
+}

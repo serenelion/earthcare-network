@@ -1,0 +1,179 @@
+# EarthCare Network Dokploy Configuration
+version: "1"
+
+project:
+  name: "earthcare-network"
+  description: "EarthCare Network - Regenerative Business Directory with Twenty CRM"
+
+services:
+  # Traefik (handled by Dokploy)
+  traefik:
+    image: "traefik:v3.5.0"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    labels:
+      - "traefik.enable=true"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik:/etc/traefik"
+      - "./acme:/acme"
+
+  # PostgreSQL with PostGIS
+  postgres:
+    image: "postgis/postgis:16-3.4"
+    environment:
+      POSTGRES_DB: "earthcare"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+      - "./scripts:/docker-entrypoint-initdb.d/"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis
+  redis:
+    image: "redis:7-alpine"
+    command: "redis-server --maxmemory-policy allkeys-lru --maxmemory 256mb"
+    volumes:
+      - "redis_data:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Twenty CRM
+  twenty-crm:
+    image: "twentycrm/twenty:latest"
+    environment:
+      PG_DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/earthcare"
+      REDIS_URL: "redis://redis:6379"
+      SERVER_URL: "https://crm.app.earthcare.network"
+      FRONTEND_URL: "https://crm.app.earthcare.network"
+      APP_BASE_URL: "https://crm.app.earthcare.network"
+      CLIENT_URL: "https://crm.app.earthcare.network"
+      APP_URL: "https://crm.app.earthcare.network"
+      BASE_URL: "https://crm.app.earthcare.network"
+      VITE_SERVER_BASE_URL: "https://crm.app.earthcare.network"
+      VITE_FRONTEND_BASE_URL: "https://crm.app.earthcare.network"
+      SUBDOMAIN_BASE: "app.earthcare.network"
+      WORKSPACE_URL_BASE: "app.earthcare.network"
+      WORKSPACE_SUBDOMAIN_ENABLED: "true"
+      IS_MULTIWORKSPACE_ENABLED: "true"
+      SUBDOMAIN_ENVIRONMENT: "production"
+      CORS_ALLOWED_ORIGINS: "https://crm.app.earthcare.network,https://app.crm.app.earthcare.network"
+      ALLOWED_HOSTS: "crm.app.earthcare.network,app.crm.app.earthcare.network"
+      HOST_HEADER_VALIDATION: "false"
+      TRUST_PROXY: "true"
+      ACCESS_TOKEN_SECRET: "${APP_SECRET}"
+      LOGIN_TOKEN_SECRET: "${APP_SECRET}"
+      REFRESH_TOKEN_SECRET: "${APP_SECRET}"
+      FILE_TOKEN_SECRET: "${APP_SECRET}"
+      APP_SECRET: "${APP_SECRET}"
+      SIGN_IN_PREFILLED: "true"
+      AUTH_PASSWORD_ENABLED: "true"
+      IS_BILLING_ENABLED: "false"
+      NODE_ENV: "production"
+    depends_on:
+      - postgres
+      - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.twenty-crm.rule=Host(`crm.app.earthcare.network`)"
+      - "traefik.http.routers.twenty-crm.entrypoints=websecure"
+      - "traefik.http.routers.twenty-crm.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.twenty-crm.service=twenty-crm"
+      - "traefik.http.routers.twenty-workspace.rule=Host(`app.crm.app.earthcare.network`)"
+      - "traefik.http.routers.twenty-workspace.entrypoints=websecure"
+      - "traefik.http.routers.twenty-workspace.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.twenty-workspace.service=twenty-crm"
+      - "traefik.http.services.twenty-crm.loadbalancer.server.port=3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # EarthCare Directory
+  earthcare-directory:
+    build:
+      context: "./directory"
+      dockerfile: "Dockerfile"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directory.rule=Host(`app.earthcare.network`)"
+      - "traefik.http.routers.directory.entrypoints=websecure"
+      - "traefik.http.routers.directory.tls.certresolver=letsencrypt"
+      - "traefik.http.services.directory.loadbalancer.server.port=80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: "earthcare"
+
+# Environment variables
+environment:
+  POSTGRES_PASSWORD: 
+    type: "secret"
+    description: "PostgreSQL password"
+  APP_SECRET:
+    type: "secret"
+    description: "Application secret key"
+
+# Deployment settings
+deployment:
+  strategy: "rolling"
+  replicas: 1
+  
+  # Health checks
+  healthcheck:
+    enabled: true
+    interval: "30s"
+    timeout: "10s"
+    retries: 3
+
+  # Resource limits
+  resources:
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+    requests:
+      memory: "512Mi"
+      cpu: "200m"
+
+# Monitoring and logging
+monitoring:
+  enabled: true
+  metrics:
+    - name: "response_time"
+      path: "/health"
+    - name: "error_rate"
+      path: "/metrics"
+
+logging:
+  level: "info"
+  format: "json"
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  retention: "7d"
+  targets:
+    - name: "postgres"
+      type: "postgresql"
+      connection: "${PG_DATABASE_URL}"

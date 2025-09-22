@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsors - EarthCare Network</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.7;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .nav-link.active {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .nav-link.cta {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link.cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #059669 100%);
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #10b981;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #cbd5e1;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+        
+        /* Founding Sponsor Section */
+        .founding-sponsor {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #1e293b 0%, #059669 100%);
+            text-align: center;
+            color: white;
+        }
+        .founding-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fbbf24;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+        .sponsor-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 60px 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .sponsor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
+        }
+        .sponsor-logo {
+            font-size: 5rem;
+            margin-bottom: 24px;
+            animation: glow 3s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .sponsor-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fbbf24;
+        }
+        .sponsor-tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+        .sponsor-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 32px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .sponsor-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e293b;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+        }
+        .sponsor-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.5);
+        }
+        
+        /* Sponsor Benefits */
+        .benefits-section {
+            padding: 100px 0;
+            background: rgba(30, 41, 59, 0.3);
+        }
+        .benefits-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+        .benefit-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #10b981;
+        }
+        .benefit-card p {
+            color: #cbd5e1;
+        }
+        
+        /* Sponsor Tiers */
+        .tiers-section {
+            padding: 100px 0;
+            background: #0f172a;
+        }
+        .tiers-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        .tier-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .tier-card.featured {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            transform: scale(1.05);
+        }
+        .tier-card.featured::before {
+            content: '✨ Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e293b;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .tier-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #10b981;
+        }
+        .tier-card.featured .tier-name {
+            color: #fbbf24;
+        }
+        .tier-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .tier-period {
+            color: #94a3b8;
+            margin-bottom: 24px;
+        }
+        .tier-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+        .tier-features li {
+            padding: 8px 0;
+            color: #cbd5e1;
+        }
+        .tier-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .tier-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tier-btn.primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        .tier-btn.featured {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e293b;
+        }
+        .tier-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Application Form */
+        .application-section {
+            padding: 100px 0;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .application-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .application-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .application-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #10b981;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-submit {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .nav-links { 
+                flex-wrap: wrap; 
+                justify-content: center;
+                gap: 16px;
+            }
+            .hero-title { font-size: 2.5rem; }
+            .sponsor-card { padding: 40px 24px; }
+            .sponsor-name { font-size: 2rem; }
+            .benefits-grid { grid-template-columns: 1fr; }
+            .tiers-grid { grid-template-columns: 1fr; }
+            .tier-card.featured { transform: none; }
+            .application-form { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Directory</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="sponsors.html" class="nav-link active">Sponsors</a>
+            <a href="https://crm.app.earthcare.network" target="_blank" class="nav-link cta">Admin Portal</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-badge">🤝 Partnership & Impact</div>
+            <h1 class="hero-title">Amplify Your Impact<br>with EarthCare Network</h1>
+            <p class="hero-subtitle">Join visionary organizations supporting the regenerative business movement. Partner with us to accelerate the transition to a thriving, sustainable economy that works for all life.</p>
+        </div>
+    </section>
+
+    <!-- Founding Sponsor Section -->
+    <section class="founding-sponsor">
+        <div class="container">
+            <div class="founding-badge">👑 Founding Sponsor</div>
+            <div class="sponsor-card">
+                <div class="sponsor-logo">🌟</div>
+                <h2 class="sponsor-name">TerraLux</h2>
+                <p class="sponsor-tagline">"Illuminating the path to planetary regeneration"</p>
+                <p class="sponsor-description">
+                    TerraLux stands as our founding sponsor, embodying the visionary leadership needed to heal our world. Their commitment to regenerative practices and conscious business principles makes them the perfect cornerstone for our network of earth-healing enterprises. Together, we're building bridges between ancient wisdom and cutting-edge innovation, creating a luminous future for all beings.
+                </p>
+                <a href="https://terra-lux.org/" target="_blank" class="sponsor-link">
+                    Visit TerraLux ✨
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="benefits-title">Why Sponsor EarthCare Network?</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <span class="benefit-icon">🎯</span>
+                    <h3>Targeted Reach</h3>
+                    <p>Connect with conscious consumers and purpose-driven businesses actively seeking sustainable solutions and regenerative partnerships.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🌱</span>
+                    <h3>Brand Alignment</h3>
+                    <p>Align your brand with the growing movement of environmental stewardship and social responsibility, enhancing your reputation and values.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">📈</span>
+                    <h3>Measurable Impact</h3>
+                    <p>Track your sponsorship ROI through detailed analytics while contributing to meaningful environmental and social outcomes.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🤝</span>
+                    <h3>Strategic Partnerships</h3>
+                    <p>Access exclusive networking opportunities with innovative companies and thought leaders in the regenerative business space.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🚀</span>
+                    <h3>Market Leadership</h3>
+                    <p>Position your organization as a pioneer in the new earth economy, attracting top talent and future-focused customers.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🌍</span>
+                    <h3>Global Visibility</h3>
+                    <p>Showcase your commitment to planetary healing to a worldwide audience of environmentally conscious stakeholders.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsor Tiers -->
+    <section class="tiers-section">
+        <div class="container">
+            <h2 class="tiers-title">Sponsorship Opportunities</h2>
+            <div class="tiers-grid">
+                <div class="tier-card">
+                    <h3 class="tier-name">Earth Guardian</h3>
+                    <div class="tier-price">$2,500</div>
+                    <div class="tier-period">per year</div>
+                    <ul class="tier-features">
+                        <li>Company listing in directory</li>
+                        <li>Sponsor badge on profile</li>
+                        <li>Monthly newsletter feature</li>
+                        <li>Social media mentions</li>
+                        <li>Basic analytics dashboard</li>
+                    </ul>
+                    <button class="tier-btn primary">Get Started</button>
+                </div>
+                
+                <div class="tier-card featured">
+                    <h3 class="tier-name">Regeneration Champion</h3>
+                    <div class="tier-price">$7,500</div>
+                    <div class="tier-period">per year</div>
+                    <ul class="tier-features">
+                        <li>Premium directory placement</li>
+                        <li>Homepage sponsor spotlight</li>
+                        <li>Quarterly impact reports</li>
+                        <li>Exclusive networking events</li>
+                        <li>Co-marketing opportunities</li>
+                        <li>Advanced analytics & insights</li>
+                    </ul>
+                    <button class="tier-btn featured">Most Popular</button>
+                </div>
+                
+                <div class="tier-card">
+                    <h3 class="tier-name">Planetary Visionary</h3>
+                    <div class="tier-price">$15,000</div>
+                    <div class="tier-period">per year</div>
+                    <ul class="tier-features">
+                        <li>Everything in Champion tier</li>
+                        <li>Custom landing page</li>
+                        <li>Speaking opportunities</li>
+                        <li>White-label partnership</li>
+                        <li>Dedicated account manager</li>
+                        <li>Strategic advisory access</li>
+                    </ul>
+                    <button class="tier-btn primary">Contact Us</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form -->
+    <section class="application-section">
+        <div class="container">
+            <h2 class="application-title">Join Our Mission</h2>
+            <p class="application-subtitle">Ready to amplify your impact and join the regenerative business movement? Submit your sponsorship application and let's create a thriving future together.</p>
+            
+            <form class="application-form" id="sponsorshipForm">
+                <div class="form-group">
+                    <label class="form-label" for="companyName">Company Name *</label>
+                    <input type="text" id="companyName" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="contactName">Primary Contact *</label>
+                    <input type="text" id="contactName" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="contactEmail">Email Address *</label>
+                    <input type="email" id="contactEmail" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="website">Company Website</label>
+                    <input type="url" id="website" class="form-input" placeholder="https://">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="sponsorshipTier">Preferred Sponsorship Tier</label>
+                    <select id="sponsorshipTier" class="form-select">
+                        <option value="">Select a tier</option>
+                        <option value="earth-guardian">Earth Guardian - $2,500/year</option>
+                        <option value="regeneration-champion">Regeneration Champion - $7,500/year</option>
+                        <option value="planetary-visionary">Planetary Visionary - $15,000/year</option>
+                        <option value="custom">Custom Partnership</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="motivation">Why do you want to sponsor EarthCare Network?</label>
+                    <textarea id="motivation" class="form-textarea" placeholder="Tell us about your company's mission, values, and how sponsorship aligns with your goals..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="additionalInfo">Additional Information</label>
+                    <textarea id="additionalInfo" class="form-textarea" placeholder="Any specific requirements, questions, or partnership ideas you'd like to discuss..."></textarea>
+                </div>
+                
+                <button type="submit" class="form-submit">Submit Application 🚀</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('sponsorshipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                companyName: document.getElementById('companyName').value,
+                contactName: document.getElementById('contactName').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                website: document.getElementById('website').value,
+                sponsorshipTier: document.getElementById('sponsorshipTier').value,
+                motivation: document.getElementById('motivation').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                submittedAt: new Date().toISOString()
+            };
+            
+            // Simulate form submission
+            alert(`Thank you ${formData.contactName}! Your sponsorship application has been received. Our partnership team will review your application and contact you within 48 hours to discuss next steps.`);
+            
+            // Reset form
+            this.reset();
+            
+            // In production, this would submit to the CRM API
+            console.log('Sponsorship application:', formData);
+        });
+        
+        // Add click handlers for tier buttons
+        document.querySelectorAll('.tier-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.textContent.includes('Contact Us')) {
+                    alert('Please fill out the application form below or email us at partnerships@earthcare.network for custom sponsorship opportunities.');
+                } else {
+                    document.getElementById('sponsorshipForm').scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Pre-select tier if button indicates a specific tier
+                    const card = this.closest('.tier-card');
+                    const tierName = card.querySelector('.tier-name').textContent;
+                    const select = document.getElementById('sponsorshipTier');
+                    
+                    if (tierName.includes('Guardian')) {
+                        select.value = 'earth-guardian';
+                    } else if (tierName.includes('Champion')) {
+                        select.value = 'regeneration-champion';
+                    } else if (tierName.includes('Visionary')) {
+                        select.value = 'planetary-visionary';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsors - EarthCare Network</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.7;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(251, 191, 36, 0.2) 0%, transparent 50%);
+            animation: shimmer 10s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.5);
+            color: #fbbf24;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #ffffff 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #cbd5e1;
+            margin-bottom: 48px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        /* Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .nav-link.active {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.2);
+        }
+        .nav-link.cta {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link.cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Founding Sponsor Section */
+        .founding-sponsor-section {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .section-title {
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .sponsor-card {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        .sponsor-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .sponsor-content {
+            position: relative;
+            z-index: 2;
+        }
+        .sponsor-logo {
+            font-size: 6rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+        .sponsor-name {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-bottom: 16px;
+        }
+        .sponsor-tagline {
+            font-size: 1.5rem;
+            color: #10b981;
+            font-style: italic;
+            margin-bottom: 32px;
+            font-weight: 600;
+        }
+        .sponsor-description {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        .sponsor-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0f172a;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
+        }
+        .sponsor-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.5);
+        }
+        
+        /* Sponsorship Tiers */
+        .tiers-section {
+            padding: 100px 0;
+        }
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .tier-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .tier-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+        }
+        .tier-card.featured {
+            border-color: rgba(251, 191, 36, 0.5);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+        .tier-card.featured::before {
+            content: '⭐ MOST POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0f172a;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+        .tier-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+        .tier-name {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+        .tier-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #10b981;
+            margin-bottom: 8px;
+        }
+        .tier-period {
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+        .tier-features {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+        .tier-features li {
+            padding: 8px 0;
+            color: #cbd5e1;
+            position: relative;
+            padding-left: 24px;
+        }
+        .tier-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+        .tier-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .tier-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        .tier-card.featured .tier-button {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0f172a;
+        }
+        
+        /* Benefits Section */
+        .benefits-section {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .benefit-card {
+            text-align: center;
+            padding: 40px 24px;
+        }
+        .benefit-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+        .benefit-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+        .benefit-text {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+        
+        /* Application Form */
+        .application-section {
+            padding: 100px 0;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 60px 40px;
+            backdrop-filter: blur(10px);
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .hero-subtitle { font-size: 1.25rem; }
+            .sponsor-card { padding: 40px 24px; }
+            .sponsor-name { font-size: 2.5rem; }
+            .tiers-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Directory</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="sponsors.html" class="nav-link active">Sponsors</a>
+            <a href="https://crm.app.earthcare.network" target="_blank" class="nav-link cta">Join Us</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">✨ Visionary Partners</div>
+                <h1 class="hero-title">Champions of the<br>New Earth Economy</h1>
+                <p class="hero-subtitle">Meet the visionary organizations investing in humanity's regenerative future. Together, we're building the infrastructure for a world that works for all life.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Founding Sponsor -->
+    <div class="founding-sponsor-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Founding Sponsor</h2>
+                <p class="section-subtitle">With deep gratitude to the visionary leader who believed in our mission from the very beginning</p>
+            </div>
+            
+            <div class="sponsor-card">
+                <div class="sponsor-content">
+                    <div class="sponsor-logo">🌟</div>
+                    <h2 class="sponsor-name">TerraLux</h2>
+                    <p class="sponsor-tagline">"Illuminating the path to planetary regeneration"</p>
+                    <p class="sponsor-description">
+                        TerraLux stands as our founding sponsor, embodying the visionary leadership needed to heal our world. Through their unwavering commitment to regenerative practices and their investment in conscious enterprises, TerraLux illuminates the way forward for businesses that serve all life. Their support makes the EarthCare Network possible, creating a beacon of hope for entrepreneurs and organizations worldwide who are building the new earth economy.
+                    </p>
+                    <a href="https://terra-lux.org/" target="_blank" class="sponsor-link">
+                        Visit TerraLux ✨
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sponsorship Tiers -->
+    <div class="tiers-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Investment Opportunities</h2>
+                <p class="section-subtitle">Join the movement and amplify your impact through strategic partnership</p>
+            </div>
+            
+            <div class="tiers-grid">
+                <div class="tier-card">
+                    <span class="tier-icon">🌱</span>
+                    <h3 class="tier-name">Earth Guardian</h3>
+                    <div class="tier-price">$2,500</div>
+                    <div class="tier-period">per month</div>
+                    <ul class="tier-features">
+                        <li>Logo in directory footer</li>
+                        <li>Quarterly impact reports</li>
+                        <li>Community newsletter feature</li>
+                        <li>Network member introductions</li>
+                        <li>Sustainability resources access</li>
+                    </ul>
+                    <button class="tier-button" onclick="selectTier('Earth Guardian')">Choose Earth Guardian</button>
+                </div>
+                
+                <div class="tier-card featured">
+                    <span class="tier-icon">🌟</span>
+                    <h3 class="tier-name">Regeneration Champion</h3>
+                    <div class="tier-price">$7,500</div>
+                    <div class="tier-period">per month</div>
+                    <ul class="tier-features">
+                        <li>Prominent homepage placement</li>
+                        <li>Dedicated sponsor page feature</li>
+                        <li>Monthly strategy calls</li>
+                        <li>Co-branded content opportunities</li>
+                        <li>Priority event speaking slots</li>
+                        <li>Custom partnership activations</li>
+                    </ul>
+                    <button class="tier-button" onclick="selectTier('Regeneration Champion')">Choose Champion</button>
+                </div>
+                
+                <div class="tier-card">
+                    <span class="tier-icon">🚀</span>
+                    <h3 class="tier-name">Planetary Visionary</h3>
+                    <div class="tier-price">$15,000</div>
+                    <div class="tier-period">per month</div>
+                    <ul class="tier-features">
+                        <li>Title sponsor recognition</li>
+                        <li>Exclusive thought leadership platform</li>
+                        <li>Custom program development</li>
+                        <li>Global network introductions</li>
+                        <li>Strategic advisory board seat</li>
+                        <li>White-label partnership options</li>
+                    </ul>
+                    <button class="tier-button" onclick="selectTier('Planetary Visionary')">Choose Visionary</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="benefits-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Partner With Us</h2>
+                <p class="section-subtitle">Your investment creates ripple effects across the global regenerative economy</p>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <span class="benefit-icon">🎯</span>
+                    <h3 class="benefit-title">Purpose-Aligned Audience</h3>
+                    <p class="benefit-text">Connect with thousands of conscious entrepreneurs and regenerative businesses actively seeking sustainable solutions and partnerships.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🌐</span>
+                    <h3 class="benefit-title">Global Network Access</h3>
+                    <p class="benefit-text">Tap into our expanding international network of verified sustainable businesses, investors, and thought leaders.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">📈</span>
+                    <h3 class="benefit-title">Measurable Impact</h3>
+                    <p class="benefit-text">Receive detailed analytics and impact reports showing how your partnership directly supports planetary healing and business transformation.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🤝</span>
+                    <h3 class="benefit-title">Co-Creation Opportunities</h3>
+                    <p class="benefit-text">Collaborate on innovative programs, content, and initiatives that advance the regenerative economy and showcase your leadership.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Form -->
+    <div class="application-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Become a Sponsor</h2>
+                <p class="section-subtitle">Ready to invest in the future of business? Let's explore how we can create impact together.</p>
+            </div>
+            
+            <div class="form-container">
+                <form id="sponsorshipForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="firstName">First Name *</label>
+                            <input type="text" id="firstName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" id="email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="company">Company/Organization *</label>
+                        <input type="text" id="company" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="website">Website</label>
+                        <input type="url" id="website" class="form-input" placeholder="https://">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="sponsorTier">Preferred Sponsorship Tier</label>
+                        <select id="sponsorTier" class="form-select">
+                            <option value="">Select a tier</option>
+                            <option value="Earth Guardian">Earth Guardian - $2,500/month</option>
+                            <option value="Regeneration Champion">Regeneration Champion - $7,500/month</option>
+                            <option value="Planetary Visionary">Planetary Visionary - $15,000/month</option>
+                            <option value="Custom">Custom Partnership</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="message">Tell us about your vision and how you'd like to support the movement *</label>
+                        <textarea id="message" class="form-textarea" placeholder="Share your regenerative mission, impact goals, and how you envision partnering with the EarthCare Network..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">🚀 Apply for Partnership</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectTier(tierName) {
+            document.getElementById('sponsorTier').value = tierName;
+            document.querySelector('.application-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        document.getElementById('sponsorshipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                company: document.getElementById('company').value,
+                website: document.getElementById('website').value,
+                sponsorTier: document.getElementById('sponsorTier').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Simulate form submission
+            alert(`Thank you, ${formData.firstName}! Your sponsorship application has been received. Our team will review your submission and reach out within 48 hours to discuss partnership opportunities. Together, we're building the new earth economy! 🌍✨`);
+            
+            // Reset form
+            this.reset();
+            
+            // In a real implementation, this would send to the backend
+            console.log('Sponsorship application:', formData);
+        });
+    </script>
+</body>
+</html>

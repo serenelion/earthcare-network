@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EarthCare Network - Business Directory</title>
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><circle cx="30" cy="30" r="2"/></g></g></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+            z-index: 2;
+            position: relative;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #10b981;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+        .hero-btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hero-btn.primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+        .hero-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.6);
+        }
+        .hero-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .hero-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .earth-animation {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        .earth-sphere {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .orbit-1 { width: 200px; height: 200px; animation: orbit 10s linear infinite; }
+        .orbit-2 { width: 250px; height: 250px; animation: orbit 15s linear infinite reverse; }
+        .orbit-3 { width: 300px; height: 300px; animation: orbit 20s linear infinite; }
+        @keyframes orbit { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        
+        .satellite {
+            position: absolute;
+            font-size: 24px;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .nav-link.active {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .nav-link.cta {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link.cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Directory Section */
+        .directory-section {
+            background: #f8fafc;
+            color: #1e293b;
+            padding: 80px 0;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #1e293b 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Status banners */
+        .status-banner { padding: 16px; border-radius: 8px; margin-bottom: 24px; text-align: center; }
+        .status-banner.connected { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+        .status-banner.sample { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
+        .status-banner.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+        
+        /* Controls */
+        .controls { display: flex; gap: 16px; margin-bottom: 32px; align-items: center; flex-wrap: wrap; }
+        .search-container { position: relative; flex: 1; max-width: 400px; }
+        .search-input { width: 100%; padding: 12px 16px 12px 44px; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #a0aec0; }
+        .category-select { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; min-width: 180px; }
+        .view-toggle { display: flex; margin-left: auto; }
+        .view-button { padding: 8px 16px; border: 1px solid #e2e8f0; background: white; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .view-button:first-child { border-radius: 6px 0 0 6px; }
+        .view-button:last-child { border-radius: 0 6px 6px 0; border-left: none; }
+        .view-button.active { background: #3182ce; color: white; border-color: #3182ce; }
+        .view-button:hover:not(.active) { background: #f7fafc; }
+        
+        .add-company-btn { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .add-company-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
+        
+        /* List view */
+        .companies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .company-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); transition: all 0.2s; cursor: pointer; }
+        .company-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .company-card.featured { border: 2px solid #f59e0b; }
+        .company-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+        .company-logo { width: 64px; height: 64px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; }
+        .company-info { flex: 1; }
+        .company-name { font-size: 1.25rem; font-weight: 600; margin-bottom: 4px; color: #1a202c; }
+        .company-location { color: #718096; font-size: 0.875rem; display: flex; align-items: center; gap: 4px; }
+        .company-description { color: #4a5568; line-height: 1.5; margin-bottom: 16px; }
+        .badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+        .badge.verified { background: #c6f6d5; color: #22543d; }
+        .badge.featured { background: #fed7d7; color: #742a2a; }
+        .badge.pledge { background: #d4edda; color: #155724; }
+        .badge.new { background: #bee3f8; color: #2a4365; }
+        .company-actions { display: flex; gap: 8px; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: all 0.2s; }
+        .btn-primary { background: #3182ce; color: white; }
+        .btn-primary:hover { background: #2c5aa0; }
+        .btn-secondary { background: #e2e8f0; color: #4a5568; }
+        .btn-secondary:hover { background: #cbd5e0; }
+        
+        /* Map view */
+        .map-container { height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); position: relative; }
+        .map-controls { position: absolute; top: 16px; right: 16px; z-index: 1000; background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 12px; padding: 32px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .modal-title { font-size: 1.5rem; font-weight: 600; }
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #a0aec0; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 6px; font-weight: 500; color: #374151; }
+        .form-input, .form-textarea, .form-select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        
+        .hidden { display: none; }
+        .loading { text-align: center; padding: 60px 20px; color: #6b7280; }
+        .loading-spinner { width: 40px; height: 40px; border: 4px solid #f3f4f6; border-top: 4px solid #3182ce; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .link-container { margin-top: 32px; text-align: center; padding: 24px; background: white; border-radius: 12px; }
+        .link-container a { color: #3182ce; text-decoration: none; font-weight: 500; }
+        .link-container a:hover { text-decoration: underline; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .view-toggle { margin-left: 0; margin-top: 16px; }
+            .companies-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">🌍 The Great Awakening</div>
+                <h1 class="hero-title">Humanity's New Earth Economy<br>Is Rising</h1>
+                <p class="hero-subtitle">We are the generation that will heal our world. Connect with the visionary businesses and conscious leaders who are creating regenerative abundance for all life on Earth. The future of business is beautiful, and it starts here.</p>
+                <div class="hero-actions">
+                    <button class="hero-btn primary" onclick="document.getElementById('listView').scrollIntoView({behavior: 'smooth'})"✨ Discover Earth Heroes</button>
+                    <button class="hero-btn secondary" onclick="showAddCompanyModal()">🌱 Join the Awakening</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="heroCompanyCount">0</div>
+                        <div class="stat-label">Earth Heroes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="heroPledgeCount">0</div>
+                        <div class="stat-label">Regeneration Pledges</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Infinite Potential</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="earth-animation">
+                    <div class="earth-sphere">🌍</div>
+                    <div class="orbit orbit-1"><div class="satellite">🌱</div></div>
+                    <div class="orbit orbit-2"><div class="satellite">♻️</div></div>
+                    <div class="orbit orbit-3"><div class="satellite">☀️</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-links">
+                <a href="#directory" class="nav-link active">Directory</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="sponsors.html" class="nav-link">Sponsors</a>
+                <a href="https://crm.app.earthcare.network" target="_blank" class="nav-link cta">Admin Portal</a>
+            </div>
+        </nav>
+
+        <!-- Directory Section -->
+        <div id="directory" class="directory-section">
+            <div class="section-header">
+                <h2 class="section-title">The Heroes of Tomorrow</h2>
+                <p class="section-subtitle">Every business here is a beacon of hope, a catalyst for healing, a pioneer of the world our children deserve</p>
+            </div>
+        
+        <div id="statusBanner" class="status-banner" style="display: none;">
+            <span id="statusText"></span>
+        </div>
+        
+        <div class="controls">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search companies, tags, or locations..." id="searchInput">
+            </div>
+            <select class="category-select" id="categorySelect">
+                <option value="all">All Categories</option>
+                <option value="permaculture">Permaculture</option>
+                <option value="renewable-energy">Renewable Energy</option>
+                <option value="eco-building">Eco-Building</option>
+                <option value="organic-food">Organic Food</option>
+                <option value="general">General</option>
+            </select>
+            <div class="view-toggle">
+                <button class="view-button active" onclick="showListView()">📋 List</button>
+                <button class="view-button" onclick="showMapView()">🗺️ Map</button>
+            </div>
+            <button class="add-company-btn" onclick="showAddCompanyModal()">➕ Add Company</button>
+        </div>
+        
+        <div id="loadingState" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading companies from EarthCare Network...</p>
+        </div>
+        
+        <div id="listView" class="companies-grid" style="display: none;">
+            <!-- Companies will be populated by JavaScript -->
+        </div>
+        
+        <div id="mapView" class="hidden">
+            <div class="map-container">
+                <div class="map-controls">
+                    <div>📍 <span id="mapCompanyCount">0</span> companies</div>
+                </div>
+                <div id="mapContainer" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="link-container">
+            <p><strong>CRM Admin Portal:</strong> <a href="https://crm.app.earthcare.network" target="_blank">Access Twenty CRM</a></p>
+            <p style="margin-top: 8px; font-size: 0.875rem; color: #666;">Add and manage companies through the CRM to see them appear here automatically</p>
+        </div>
+    </div>
+    
+    <!-- Add Company Modal -->
+    <div id="addCompanyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Your Company</h2>
+                <button class="close-btn" onclick="hideAddCompanyModal()">&times;</button>
+            </div>
+            <form id="addCompanyForm">
+                <div class="form-group">
+                    <label class="form-label" for="companyName">Company Name *</label>
+                    <input type="text" id="companyName" class="form-input" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="companyCategory">Category</label>
+                        <select id="companyCategory" class="form-select">
+                            <option value="general">General</option>
+                            <option value="permaculture">Permaculture</option>
+                            <option value="renewable-energy">Renewable Energy</option>
+                            <option value="eco-building">Eco-Building</option>
+                            <option value="organic-food">Organic Food</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="companyWebsite">Website</label>
+                        <input type="url" id="companyWebsite" class="form-input" placeholder="https://">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="companyAddress">Address</label>
+                    <input type="text" id="companyAddress" class="form-input" placeholder="123 Main St, City, State">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="companyDescription">Description</label>
+                    <textarea id="companyDescription" class="form-textarea" placeholder="Tell us about your company's mission and sustainable practices..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="contactEmail">Contact Email *</label>
+                        <input type="email" id="contactEmail" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="companyPhone">Phone</label>
+                        <input type="tel" id="companyPhone" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="earthcarePledge">
+                        <span>We commit to the EarthCare Pledge for sustainable practices</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="hideAddCompanyModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit for Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let allCompanies = [];
+        let map = null;
+        let currentView = 'list';
+        
+        // Sample companies data
+        const sampleCompanies = [
+            {
+                id: '1',
+                name: 'Green Valley Permaculture',
+                address: 'Portland, Oregon',
+                description: 'Sustainable farming and education center specializing in permaculture design and organic food production.',
+                category: 'permaculture',
+                website: 'https://greenvalley.example.com',
+                email: 'contact@greenvalley.example.com',
+                phone: '(503) 555-0123',
+                latitude: 45.5152,
+                longitude: -122.6784,
+                verified: true,
+                claimed: true,
+                featured: true,
+                pledgeSigned: true,
+                logo: '🌱',
+                addedAt: new Date('2024-01-15')
+            },
+            {
+                id: '2',
+                name: 'EcoTech Solutions',
+                address: 'Austin, Texas',
+                description: 'Leading provider of solar panel installations and wind energy systems for residential and commercial properties.',
+                category: 'renewable-energy',
+                website: 'https://ecotech.example.com',
+                email: 'info@ecotech.example.com',
+                phone: '(512) 555-0456',
+                latitude: 30.2672,
+                longitude: -97.7431,
+                verified: true,
+                claimed: false,
+                featured: false,
+                pledgeSigned: true,
+                logo: '☀️',
+                addedAt: new Date('2024-02-20')
+            },
+            {
+                id: '3',
+                name: 'Sustainable Building Co',
+                address: 'Boulder, Colorado',
+                description: 'Construction company using natural building materials and passive house design principles.',
+                category: 'eco-building',
+                website: 'https://sustainablebuild.example.com',
+                email: 'hello@sustainablebuild.example.com',
+                phone: '(303) 555-0789',
+                latitude: 40.0150,
+                longitude: -105.2705,
+                verified: false,
+                claimed: false,
+                featured: false,
+                pledgeSigned: false,
+                logo: '🏠',
+                addedAt: new Date('2024-03-10')
+            },
+            {
+                id: '4',
+                name: 'Organic Harvest Farm',
+                address: 'Sonoma, California',
+                description: 'Family-owned organic farm producing seasonal vegetables and herbs using regenerative agriculture practices.',
+                category: 'organic-food',
+                website: 'https://organicharvest.example.com',
+                email: 'farm@organicharvest.example.com',
+                phone: '(707) 555-0321',
+                latitude: 38.2917,
+                longitude: -122.4581,
+                verified: true,
+                claimed: true,
+                featured: true,
+                pledgeSigned: true,
+                logo: '🥬',
+                addedAt: new Date('2024-01-05')
+            }
+        ];
+        
+        // Load companies from API or use sample data
+        async function loadCompanies() {
+            try {
+                // Try to load from API first
+                const response = await fetch('/api/companies');
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    allCompanies = result.data;
+                    showStatusBanner('connected', `✅ <strong>Live Data Connected!</strong> Showing ${result.count} companies from CRM database`);
+                } else {
+                    throw new Error('No data from API');
+                }
+            } catch (error) {
+                console.log('API not available, using sample data');
+                allCompanies = sampleCompanies;
+                showStatusBanner('sample', `⚠️ <strong>Sample Data Active</strong> - Add companies in the CRM to see them here (${sampleCompanies.length} sample companies)`);
+            }
+            
+            // Update hero stats
+            updateHeroStats();
+            
+            // Hide loading and show content
+            document.getElementById('loadingState').style.display = 'none';
+            if (currentView === 'list') {
+                document.getElementById('listView').style.display = 'grid';
+                renderCompanies(allCompanies);
+            } else {
+                showMapView();
+            }
+        }
+        
+        function updateHeroStats() {
+            const totalCompanies = allCompanies.length;
+            const pledgeSigners = allCompanies.filter(c => c.pledgeSigned).length;
+            
+            // Animate numbers
+            animateNumber('heroCompanyCount', totalCompanies);
+            animateNumber('heroPledgeCount', pledgeSigners);
+        }
+        
+        function animateNumber(elementId, target) {
+            const element = document.getElementById(elementId);
+            const duration = 2000;
+            const step = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+        
+        function showStatusBanner(type, text) {
+            const banner = document.getElementById('statusBanner');
+            const statusText = document.getElementById('statusText');
+            banner.className = `status-banner ${type}`;
+            statusText.innerHTML = text;
+            banner.style.display = 'block';
+        }
+        
+        function renderCompanies(companies) {
+            const listView = document.getElementById('listView');
+            listView.innerHTML = companies.map(company => {
+                const isNew = company.addedAt && (new Date() - new Date(company.addedAt)) < (7 * 24 * 60 * 60 * 1000); // 7 days
+                
+                return `
+                    <div class="company-card ${company.featured ? 'featured' : ''}" onclick="viewCompanyDetails('${company.id}')">
+                        <div class="company-header">
+                            <div class="company-logo">${company.logo || '🏢'}</div>
+                            <div class="company-info">
+                                <h3 class="company-name">${company.name}</h3>
+                                <p class="company-location">📍 ${company.address || 'Location not specified'}</p>
+                            </div>
+                        </div>
+                        <p class="company-description">${company.description || 'No description available'}</p>
+                        <div class="badges">
+                            ${company.verified ? '<span class="badge verified">✓ Verified</span>' : ''}
+                            ${company.featured ? '<span class="badge featured">⭐ Featured</span>' : ''}
+                            ${company.pledgeSigned ? '<span class="badge pledge">🌍 EarthCare Pledge</span>' : ''}
+                            ${isNew ? '<span class="badge new">🆕 New</span>' : ''}
+                        </div>
+                        <div class="company-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); contactCompany('${company.id}')">Contact</button>
+                            ${!company.claimed ? '<button class="btn btn-secondary" onclick="event.stopPropagation(); claimBusiness(\''+company.id+'\');">Claim</button>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function filterCompanies() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categorySelect').value;
+            
+            let filtered = allCompanies.filter(company => {
+                const matchesSearch = !searchTerm || 
+                    company.name.toLowerCase().includes(searchTerm) || 
+                    (company.description || '').toLowerCase().includes(searchTerm) ||
+                    (company.address || '').toLowerCase().includes(searchTerm) ||
+                    (company.category || '').toLowerCase().includes(searchTerm);
+                const matchesCategory = category === 'all' || company.category === category;
+                return matchesSearch && matchesCategory;
+            });
+            
+            if (currentView === 'list') {
+                renderCompanies(filtered);
+            } else {
+                updateMapMarkers(filtered);
+            }
+        }
+        
+        function showListView() {
+            currentView = 'list';
+            document.getElementById('listView').classList.remove('hidden');
+            document.getElementById('mapView').classList.add('hidden');
+            document.getElementById('listView').style.display = 'grid';
+            document.querySelectorAll('.view-button')[0].classList.add('active');
+            document.querySelectorAll('.view-button')[1].classList.remove('active');
+            filterCompanies();
+        }
+        
+        function showMapView() {
+            currentView = 'map';
+            document.getElementById('listView').classList.add('hidden');
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('mapView').classList.remove('hidden');
+            document.querySelectorAll('.view-button')[0].classList.remove('active');
+            document.querySelectorAll('.view-button')[1].classList.add('active');
+            initializeMap();
+        }
+        
+        function initializeMap() {
+            if (map) {
+                map.remove();
+            }
+            
+            map = new maplibregl.Map({
+                container: 'mapContainer',
+                style: 'https://api.maptiler.com/maps/streets/style.json?key=demo',
+                center: [-98.5795, 39.8283],
+                zoom: 4
+            });
+            
+            map.on('load', () => {
+                updateMapMarkers(allCompanies);
+            });
+        }
+        
+        function updateMapMarkers(companies) {
+            if (!map) return;
+            
+            // Clear existing markers
+            const existingMarkers = document.querySelectorAll('.maplibregl-marker');
+            existingMarkers.forEach(marker => marker.remove());
+            
+            let validCompanies = 0;
+            companies.forEach(company => {
+                if (company.latitude && company.longitude) {
+                    validCompanies++;
+                    
+                    const el = document.createElement('div');
+                    el.innerHTML = company.logo || '🏢';
+                    el.style.fontSize = '24px';
+                    el.style.cursor = 'pointer';
+                    el.style.background = company.featured ? '#f59e0b' : '#3182ce';
+                    el.style.borderRadius = '50%';
+                    el.style.width = '40px';
+                    el.style.height = '40px';
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.justifyContent = 'center';
+                    el.style.border = '2px solid white';
+                    el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+                    
+                    const popup = new maplibregl.Popup({ offset: 25 })
+                        .setHTML(`
+                            <div style="padding: 8px;">
+                                <h3 style="margin: 0 0 8px 0; font-size: 1.1rem;">${company.name}</h3>
+                                <p style="margin: 0 0 8px 0; color: #666; font-size: 0.9rem;">📍 ${company.address || 'Location not specified'}</p>
+                                <p style="margin: 0 0 12px 0; font-size: 0.85rem; line-height: 1.4;">${(company.description || '').substring(0, 120)}${company.description && company.description.length > 120 ? '...' : ''}</p>
+                                <div style="display: flex; gap: 8px;">
+                                    ${company.verified ? '<span style="background: #c6f6d5; color: #22543d; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem;">✓ Verified</span>' : ''}
+                                    ${company.pledgeSigned ? '<span style="background: #d4edda; color: #155724; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem;">🌍 Pledge</span>' : ''}
+                                </div>
+                            </div>
+                        `);
+                    
+                    new maplibregl.Marker(el)
+                        .setLngLat([company.longitude, company.latitude])
+                        .setPopup(popup)
+                        .addTo(map);
+                }
+            });
+            
+            document.getElementById('mapCompanyCount').textContent = validCompanies;
+        }
+        
+        // Modal functions
+        function showAddCompanyModal() {
+            document.getElementById('addCompanyModal').classList.add('show');
+        }
+        
+        function hideAddCompanyModal() {
+            document.getElementById('addCompanyModal').classList.remove('show');
+            document.getElementById('addCompanyForm').reset();
+        }
+        
+        // Company interaction functions
+        function viewCompanyDetails(companyId) {
+            const company = allCompanies.find(c => c.id === companyId);
+            if (company) {
+                alert(`Company Details:
+
+Name: ${company.name}
+Location: ${company.address}
+Website: ${company.website || 'Not provided'}
+Email: ${company.email || 'Not provided'}
+Phone: ${company.phone || 'Not provided'}
+
+Description: ${company.description}`);
+            }
+        }
+        
+        function contactCompany(companyId) {
+            const company = allCompanies.find(c => c.id === companyId);
+            if (company) {
+                if (company.website) {
+                    window.open(company.website, '_blank');
+                } else if (company.email) {
+                    window.location.href = `mailto:${company.email}`;
+                } else {
+                    alert('Contact information not available for this company.');
+                }
+            }
+        }
+        
+        function claimBusiness(companyId) {
+            alert('Business claiming feature will redirect to CRM for verification. This feature connects to the admin panel.');
+            window.open('https://crm.app.earthcare.network', '_blank');
+        }
+        
+        // Form submission
+        document.getElementById('addCompanyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('companyName').value,
+                category: document.getElementById('companyCategory').value,
+                website: document.getElementById('companyWebsite').value,
+                address: document.getElementById('companyAddress').value,
+                description: document.getElementById('companyDescription').value,
+                email: document.getElementById('contactEmail').value,
+                phone: document.getElementById('companyPhone').value,
+                pledgeSigned: document.getElementById('earthcarePledge').checked
+            };
+            
+            // Simulate form submission
+            alert('Thank you! Your company submission has been received and will be reviewed by our team. You will receive a confirmation email shortly.');
+            hideAddCompanyModal();
+            
+            // In a real implementation, this would send to the CRM API
+            console.log('Company submission:', formData);
+        });
+        
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterCompanies);
+        document.getElementById('categorySelect').addEventListener('change', filterCompanies);
+        
+        // Close modal when clicking outside
+        document.getElementById('addCompanyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddCompanyModal();
+            }
+        });
+        
+        // Load companies on page load
+        loadCompanies();
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_DB: default
+      POSTGRES_USER: twenty
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-twentypassword123}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - earthcare
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - earthcare
+    restart: unless-stopped
+
+  directory:
+    image: nginx:alpine
+    volumes:
+      - ./directory:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+    networks:
+      - earthcare
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.directory.rule=Host(`app.earthcare.network`)
+      - traefik.http.routers.directory.entrypoints=websecure
+      - traefik.http.routers.directory.tls.certresolver=letsencrypt
+      - traefik.http.services.directory.loadbalancer.server.port=80
+
+  mcp-server:
+    image: node:18-alpine
+    working_dir: /app
+    command: ["sh", "-c", "npm install axios express cors && node server.js"]
+    environment:
+      CRM_URL: https://crm.app.earthcare.network
+      DIRECTORY_URL: https://app.earthcare.network
+    volumes:
+      - ./mcp-server:/app
+    ports:
+      - "8090:8080"
+    depends_on:
+      - directory
+    networks:
+      - earthcare
+    restart: unless-stopped
+
+  crm-proxy:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - earthcare
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.crm.rule=Host(`crm.app.earthcare.network`) || Host(`app.crm.app.earthcare.network`)
+      - traefik.http.routers.crm.entrypoints=websecure
+      - traefik.http.routers.crm.tls.certresolver=letsencrypt
+      - traefik.http.services.crm.loadbalancer.server.port=80
+
+networks:
+  earthcare:
+    external: false
+
+volumes:
+  postgres_data:
+  redis_data:

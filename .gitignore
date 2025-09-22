@@ -48,3 +48,5 @@ dump.rdb
 
 mcp.json
 /.junie/
+earthcare-deployment.tar.gz
+deployment-package/

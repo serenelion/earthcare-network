@@ -1,0 +1,59 @@
+# 🌍 EarthCare Network - Dokploy Configuration
+# Use this configuration in your Dokploy dashboard
+
+version: '3.8'
+
+# GitHub Repository Configuration
+repository:
+  url: "https://github.com/serenelion/earthcare-network"
+  branch: "main"
+  auto_deploy: true
+
+# Application Configuration  
+application:
+  name: "earthcare-network"
+  type: "docker-compose"
+  build_path: "./directory"
+  dockerfile: "Dockerfile"
+
+# Port Mapping
+ports:
+  - container: 80
+    host: 3003
+    public: true
+
+# Domain Configuration
+domains:
+  - domain: "app.earthcare.network"
+    port: 3003
+    ssl: true
+    auto_ssl: true
+
+# Environment Variables
+environment:
+  NODE_ENV: "production"
+  PORT: "80"
+
+# Health Check
+health_check:
+  enabled: true
+  path: "/"
+  interval: 30
+  timeout: 10
+  retries: 3
+
+# Auto-scaling (optional)
+scaling:
+  min_instances: 1
+  max_instances: 3
+  cpu_threshold: 80
+  memory_threshold: 80
+
+# Monitoring
+monitoring:
+  enabled: true
+  alerts:
+    - type: "downtime"
+      threshold: 5
+    - type: "high_cpu"
+      threshold: 90

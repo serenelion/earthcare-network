@@ -1,0 +1,19 @@
+{
+  "name": "earthcare-postgres",
+  "description": "PostgreSQL database for EarthCare Network",
+  "sourceType": "docker",
+  "dockerImage": "postgis/postgis:15-3.3",
+  "env": {
+    "POSTGRES_DB": "default",
+    "POSTGRES_USER": "twenty",
+    "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",
+    "POSTGRES_HOST_AUTH_METHOD": "trust"
+  },
+  "port": 5432,
+  "volumes": [
+    {
+      "name": "postgres-data",
+      "mountPath": "/var/lib/postgresql/data"
+    }
+  ]
+}

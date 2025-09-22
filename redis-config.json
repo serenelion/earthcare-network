@@ -1,0 +1,13 @@
+{
+  "name": "earthcare-redis",
+  "description": "Redis cache for EarthCare Network",
+  "sourceType": "docker",
+  "dockerImage": "redis:7-alpine",
+  "port": 6379,
+  "volumes": [
+    {
+      "name": "redis-data",
+      "mountPath": "/data"
+    }
+  ]
+}

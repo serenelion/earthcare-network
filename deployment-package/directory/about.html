@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - EarthCare Network</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.7;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #10b981;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #cbd5e1;
+            margin-bottom: 48px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        /* Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .nav-link.active {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .nav-link.cta {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link.cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Story Sections */
+        .story-section {
+            padding: 100px 0;
+            position: relative;
+        }
+        .story-section:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .section-number {
+            font-size: 1rem;
+            color: #10b981;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #ffffff 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-text {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+        .section-highlight {
+            font-size: 1.5rem;
+            color: #10b981;
+            font-weight: 600;
+            font-style: italic;
+            margin: 48px 0;
+        }
+        
+        /* Vision Grid */
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+        .vision-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .vision-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+        }
+        .vision-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+        .vision-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+        .vision-text {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+        
+        /* Call to Action */
+        .cta-section {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 100px 0;
+            text-align: center;
+        }
+        .cta-title {
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 24px;
+        }
+        .cta-text {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #059669;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .hero-subtitle { font-size: 1.25rem; }
+            .section-text { font-size: 1.1rem; }
+            .vision-grid { grid-template-columns: 1fr; gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Directory</a>
+            <a href="about.html" class="nav-link active">About</a>
+            <a href="sponsors.html" class="nav-link">Sponsors</a>
+            <a href="https://crm.app.earthcare.network" target="_blank" class="nav-link cta">Join Us</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🌟 The New Earth Story</div>
+                <h1 class="hero-title">The Great Awakening:<br>Humanity's New Earth Story</h1>
+                <p class="hero-subtitle">We stand at the threshold of the greatest transformation in human history. The old systems are crumbling, and from their ashes, a new earth economy is rising—one that honors all life and creates abundance for generations to come.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Old World Ending -->
+    <div class="story-section">
+        <div class="container">
+            <div class="story-content">
+                <div class="section-number">Chapter One</div>
+                <h2 class="section-title">The Old World Ending</h2>
+                <p class="section-text">For too long, humanity operated under a story of separation—from each other, from nature, from our own hearts. We built systems that extracted rather than regenerated, that competed rather than collaborated, that took from future generations rather than gifting to them.</p>
+                <p class="section-text">But every ending is also a beginning. The cracks in the old paradigm are letting the light in, and through those cracks, a new world is emerging.</p>
+                <div class="section-highlight">"In the breakdown of the old, the breakthrough of the new becomes possible."</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Great Awakening -->
+    <div class="story-section">
+        <div class="container">
+            <div class="story-content">
+                <div class="section-number">Chapter Two</div>
+                <h2 class="section-title">The Great Awakening</h2>
+                <p class="section-text">Across the globe, millions of hearts are awakening to a profound truth: we are not separate from nature—we ARE nature. We are not isolated competitors—we are interconnected collaborators in the grand symphony of life.</p>
+                <p class="section-text">This awakening is birthing a new economy—one that recognizes that true wealth comes from regenerating rather than extracting, from healing rather than harming, from creating abundance for all rather than scarcity for many.</p>
+                <div class="section-highlight">"We are the ones we have been waiting for. We are the generation that will heal the world."</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Web of Regeneration -->
+    <div class="story-section">
+        <div class="container">
+            <div class="story-content">
+                <div class="section-number">Chapter Three</div>
+                <h2 class="section-title">The Web of Regeneration</h2>
+                <p class="section-text">The EarthCare Network is more than a directory—it's a living web of regenerative enterprises, conscious leaders, and awakened souls who are weaving the new earth economy into being.</p>
+                <p class="section-text">Every business in our network is a node of healing, a center of transformation, a beacon of hope for what business can be when it serves all life. Together, we are creating the infrastructure for a world that works for everyone.</p>
+                <div class="section-highlight">"When we change the way we do business, we change the world."</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Vision -->
+    <div class="story-section">
+        <div class="container">
+            <div class="story-content">
+                <div class="section-number">Our Vision</div>
+                <h2 class="section-title">Four Pillars of the New Earth</h2>
+            </div>
+            <div class="vision-grid">
+                <div class="vision-card">
+                    <span class="vision-icon">🌍</span>
+                    <h3 class="vision-title">Planetary Healing</h3>
+                    <p class="vision-text">Every business operation regenerates rather than depletes our Earth. We measure success by the health we restore to our soils, waters, and atmosphere.</p>
+                </div>
+                <div class="vision-card">
+                    <span class="vision-icon">🤝</span>
+                    <h3 class="vision-title">Conscious Collaboration</h3>
+                    <p class="vision-text">Competition gives way to collaboration as we recognize that in an interconnected world, everyone's success is our success.</p>
+                </div>
+                <div class="vision-card">
+                    <span class="vision-icon">💎</span>
+                    <h3 class="vision-title">Abundant Prosperity</h3>
+                    <p class="vision-text">True wealth flows when we create value for all stakeholders—people, planet, and future generations. Abundance is our natural state.</p>
+                </div>
+                <div class="vision-card">
+                    <span class="vision-icon">🌟</span>
+                    <h3 class="vision-title">Future Generations</h3>
+                    <p class="vision-text">Every decision is made through the lens of seven generations. We are ancestors to the future, guardians of tomorrow's possibilities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Your Hero's Journey Begins Now</h2>
+            <p class="cta-text">The world needs your unique gifts, your conscious business, your regenerative vision. Join the awakening. Be part of the solution. Help us weave the new earth economy into being.</p>
+            <a href="index.html" class="cta-button">🌱 Join the Movement</a>
+        </div>
+    </div>
+</body>
+</html>

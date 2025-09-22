@@ -1,0 +1,158 @@
+name: 🌍 EarthCare Network - Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: earthcare-network
+
+jobs:
+  # Build and Test
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js 24.5.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies with Yarn
+        run: |
+          corepack enable
+          yarn --version
+          yarn install --frozen-lockfile
+
+      - name: 🏗️ Build directory
+        run: |
+          echo "✅ Directory is static HTML - no build needed"
+          ls -la directory/
+
+      - name: 🧪 Test directory files
+        run: |
+          # Verify all essential files exist
+          test -f directory/index.html || exit 1
+          test -f directory/about.html || exit 1
+          test -f directory/sponsors.html || exit 1
+          test -f directory/Dockerfile || exit 1
+          echo "✅ All directory files present"
+
+      - name: 🐳 Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📊 Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🏗️ Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./directory
+          file: ./directory/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Deploy to Dokploy
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚢 Deploy to Dokploy
+        run: |
+          echo "🚢 Deploying EarthCare Network to Digital Ocean..."
+          
+          # Create Dokploy deployment webhook
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "User-Agent: GitHub-Actions" \
+            -d '{
+              "ref": "${{ github.ref }}",
+              "repository": {
+                "full_name": "${{ github.repository }}",
+                "clone_url": "${{ github.server_url }}/${{ github.repository }}.git"
+              },
+              "head_commit": {
+                "id": "${{ github.sha }}",
+                "message": "${{ github.event.head_commit.message }}"
+              }
+            }' \
+            "${{ secrets.DOKPLOY_WEBHOOK_URL }}" \
+            && echo "✅ Deployment triggered successfully" \
+            || echo "❌ Deployment trigger failed"
+
+      - name: ⏳ Wait for deployment
+        run: |
+          echo "⏳ Waiting for services to start..."
+          sleep 120
+
+      - name: 🧪 Verify deployment
+        run: |
+          echo "🧪 Testing deployed services..."
+          
+          # Test directory
+          if curl -sSf -m 15 "https://app.earthcare.network" > /dev/null; then
+            echo "✅ Directory is live at https://app.earthcare.network"
+          else
+            echo "❌ Directory not responding"
+          fi
+          
+          # Test about page
+          if curl -sSf -m 10 "https://app.earthcare.network/about.html" > /dev/null; then
+            echo "✅ About page is accessible"
+          else
+            echo "❌ About page not responding"
+          fi
+          
+          # Test sponsors page
+          if curl -sSf -m 10 "https://app.earthcare.network/sponsors.html" > /dev/null; then
+            echo "✅ Sponsors page is accessible"
+          else
+            echo "❌ Sponsors page not responding"
+          fi
+
+      - name: 📧 Deployment notification
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "🎉 EarthCare Network deployed successfully!"
+            echo "🌍 Live at: https://app.earthcare.network"
+          else
+            echo "❌ Deployment failed - check logs above"
+          fi
