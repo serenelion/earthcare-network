@@ -13,12 +13,6 @@ services:
       - "3003:80"
     networks:
       - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.directory.rule=Host(`app.earthcare.network`)"
-      - "traefik.http.routers.directory.entrypoints=websecure"
-      - "traefik.http.routers.directory.tls.certresolver=letsencrypt"
-      - "traefik.http.services.directory.loadbalancer.server.port=80"
 
 networks:
   dokploy-network:
