@@ -2,7 +2,7 @@ services:
   # Twenty CRM Server
   twenty-server:
     image: twentycrm/twenty:latest
-    container_name: earthcare-twenty-server
+    container_name: earthcare-twenty-server-v2
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -29,7 +29,7 @@ services:
   # Twenty CRM Worker  
   twenty-worker:
     image: twentycrm/twenty:latest
-    container_name: earthcare-twenty-worker
+    container_name: earthcare-twenty-worker-v2
     restart: unless-stopped
     command: yarn worker:prod
     environment:
@@ -55,7 +55,7 @@ services:
     build:
       context: ./directory
       dockerfile: Dockerfile
-    container_name: earthcare-directory
+    container_name: earthcare-directory-v2
     restart: unless-stopped
     environment:
       - REACT_APP_CRM_API_URL=https://crm.app.earthcare.network/graphql
@@ -69,7 +69,7 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgis/postgis:16-3.4-alpine
-    container_name: earthcare-postgres
+    container_name: earthcare-postgres-v2
     restart: unless-stopped
     environment:
       - POSTGRES_DB=twenty
@@ -91,7 +91,7 @@ services:
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: earthcare-redis
+    container_name: earthcare-redis-v2
     restart: unless-stopped
     ports:
       - "6379:6379"
