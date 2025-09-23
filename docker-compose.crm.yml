@@ -13,8 +13,8 @@ services:
       - SUPPORT_EMAIL=support@earthcare.network
       - ENABLE_DB_MIGRATIONS=true
       - PORT=3000
-    expose:
-      - "3000"
+    ports:
+      - "3001:3000"
     depends_on:
       postgres:
         condition: service_healthy
