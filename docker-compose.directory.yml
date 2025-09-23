@@ -1,0 +1,19 @@
+services:
+  # EarthCare Directory (React App)
+  directory:
+    build:
+      context: ./directory
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - REACT_APP_CRM_API_URL=https://crm.app.earthcare.network/graphql
+      - REACT_APP_CRM_BASE_URL=https://crm.app.earthcare.network
+      - NODE_ENV=production
+    ports:
+      - "3003:80"
+    networks:
+      - earthcare-network
+
+networks:
+  earthcare-network:
+    driver: bridge

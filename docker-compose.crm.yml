@@ -1,5 +1,5 @@
 services:
-  # Twenty CRM Server (Dokploy Deployment)
+  # Twenty CRM Server
   twenty-server:
     image: twentycrm/twenty:latest
     restart: unless-stopped
@@ -13,8 +13,6 @@ services:
       - SUPPORT_EMAIL=support@earthcare.network
       - ENABLE_DB_MIGRATIONS=true
       - PORT=3000
-    ports:
-      - "3000:3000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -25,11 +23,11 @@ services:
     volumes:
       - twenty-server-data:/app/packages/twenty-server/.local-storage
 
-  # Twenty CRM Worker (Background Jobs)
+  # Twenty CRM Worker  
   twenty-worker:
     image: twentycrm/twenty:latest
     restart: unless-stopped
-    command: ["node", "dist/src/queue-worker/queue-worker"]
+    command: yarn worker:prod
     environment:
       - NODE_ENV=production
       - SERVER_URL=https://crm.app.earthcare.network
@@ -59,8 +57,6 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
     networks:
       - earthcare-network
     healthcheck:
@@ -73,8 +69,6 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     networks:
       - earthcare-network
     healthcheck:
