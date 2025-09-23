@@ -1,5 +1,4 @@
-import React from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider, gql, useQuery } from '@apollo/client';
+import { ApolloClient, ApolloProvider, gql, InMemoryCache, useQuery } from '@apollo/client';
 import './App.css';
 
 // GraphQL client configuration
