@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: earthcare-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: twenty
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: KeepGoin!!!
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - earthcare-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d twenty"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: earthcare-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - earthcare-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # EarthCare Directory (Static HTML)
+  directory:
+    build:
+      context: ./directory
+      dockerfile: Dockerfile
+    container_name: earthcare-directory
+    restart: unless-stopped
+    ports:
+      - "3003:80"
+    networks:
+      - earthcare-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directory.rule=Host(`app.earthcare.network`)"
+      - "traefik.http.routers.directory.tls=true"
+      - "traefik.http.routers.directory.tls.certresolver=letsencrypt"
+      - "traefik.http.services.directory.loadbalancer.server.port=80"
+
+  # Twenty CRM (Using Official Image as fallback)
+  twenty:
+    image: twentycrm/twenty:latest
+    container_name: earthcare-twenty
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      SERVER_URL: https://crm.app.earthcare.network
+      FRONT_BASE_URL: https://crm.app.earthcare.network
+      PG_DATABASE_URL: postgres://postgres:KeepGoin!!!@postgres:5432/twenty
+      REDIS_URL: redis://redis:6379
+      APP_SECRET: earth-care-network-app-secret-2025-super-secure-key
+      SUPPORT_EMAIL: support@earthcare.network
+      ENABLE_DB_MIGRATIONS: true
+      PORT: 3000
+      ACCESS_TOKEN_SECRET: earthcare_access_token_secret_2024_very_long_secure_string
+      REFRESH_TOKEN_SECRET: earthcare_refresh_token_secret_2024_very_long_secure_string
+      LOGIN_TOKEN_SECRET: earthcare_login_token_secret_2024_very_long_secure_string
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - earthcare-network
+    volumes:
+      - twenty_storage:/app/.local-storage
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.twenty.rule=Host(`crm.app.earthcare.network`)"
+      - "traefik.http.routers.twenty.tls=true"
+      - "traefik.http.routers.twenty.tls.certresolver=letsencrypt"
+      - "traefik.http.services.twenty.loadbalancer.server.port=3000"
+
+volumes:
+  postgres_data:
+    driver: local
+  twenty_storage:
+    driver: local
+
+networks:
+  earthcare-network:
+    driver: bridge
