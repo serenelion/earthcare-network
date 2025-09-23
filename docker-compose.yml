@@ -1,53 +1,70 @@
 services:
-  # EarthCare Directory - Static Site
+  # Twenty CRM Server
+  twenty-server:
+    image: twentycrm/twenty:latest
+    container_name: earthcare-twenty-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - SERVER_URL=https://crm.app.earthcare.network
+      - FRONT_BASE_URL=https://crm.app.earthcare.network
+      - PG_DATABASE_URL=postgres://postgres:KeepGoin!!!@postgres:5432/twenty
+      - REDIS_URL=redis://redis:6379
+      - APP_SECRET=earth-care-network-app-secret-2025-super-secure-key
+      - SUPPORT_EMAIL=support@earthcare.network
+      - ENABLE_DB_MIGRATIONS=true
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - earthcare-network
+    volumes:
+      - twenty-server-data:/app/packages/twenty-server/.local-storage
+
+  # Twenty CRM Worker  
+  twenty-worker:
+    image: twentycrm/twenty:latest
+    container_name: earthcare-twenty-worker
+    restart: unless-stopped
+    command: yarn worker:prod
+    environment:
+      - NODE_ENV=production
+      - SERVER_URL=https://crm.app.earthcare.network
+      - FRONT_BASE_URL=https://crm.app.earthcare.network
+      - PG_DATABASE_URL=postgres://postgres:KeepGoin!!!@postgres:5432/twenty
+      - REDIS_URL=redis://redis:6379
+      - APP_SECRET=earth-care-network-app-secret-2025-super-secure-key
+      - SUPPORT_EMAIL=support@earthcare.network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - earthcare-network
+    volumes:
+      - twenty-server-data:/app/packages/twenty-server/.local-storage
+
+  # EarthCare Directory (React App)
   directory:
     build:
       context: ./directory
       dockerfile: Dockerfile
     container_name: earthcare-directory
     restart: unless-stopped
+    environment:
+      - REACT_APP_CRM_API_URL=https://crm.app.earthcare.network/graphql
+      - REACT_APP_CRM_BASE_URL=https://crm.app.earthcare.network
+      - NODE_ENV=production
     ports:
       - "3003:80"
     networks:
       - earthcare-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.directory.rule=Host(`app.earthcare.network`)"
-      - "traefik.http.routers.directory.entrypoints=websecure"
-      - "traefik.http.routers.directory.tls.certresolver=letsencrypt"
-      - "traefik.http.services.directory.loadbalancer.server.port=80"
-
-  # Twenty CRM Application
-  twenty-server:
-    build:
-      context: .
-      dockerfile: Dockerfile.twenty
-    container_name: earthcare-crm
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:KeepGoin!!!@postgres:5432/twenty
-      - REDIS_URL=redis://redis:6379
-      - SERVER_URL=https://crm.app.earthcare.network
-      - FRONT_BASE_URL=https://crm.app.earthcare.network
-      - ACCESS_TOKEN_SECRET=earthcare-access-token-secret-2025
-      - REFRESH_TOKEN_SECRET=earthcare-refresh-token-secret-2025
-      - LOGIN_TOKEN_SECRET=earthcare-login-token-secret-2025
-      - SUPPORT_EMAIL=support@earthcare.network
-      - PORT=3000
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - earthcare-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.crm.rule=Host(`crm.app.earthcare.network`)"
-      - "traefik.http.routers.crm.entrypoints=websecure"
-      - "traefik.http.routers.crm.tls.certresolver=letsencrypt"
-      - "traefik.http.services.crm.loadbalancer.server.port=3000"
 
   # PostgreSQL Database
   postgres:
@@ -88,6 +105,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  twenty-server-data:
     driver: local
 
 networks:

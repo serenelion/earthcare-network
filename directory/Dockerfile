@@ -1,8 +1,33 @@
-# Directory Dockerfile
+# Build stage for React app
+FROM node:18-alpine AS build
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY src/ ./src/
+COPY public/ ./public/
+COPY tsconfig.json* ./
+
+# Set build environment variables
+ENV REACT_APP_CRM_API_URL=https://crm.app.earthcare.network/graphql
+ENV REACT_APP_CRM_BASE_URL=https://crm.app.earthcare.network
+
+# Build the React app
+RUN npm run build
+
+# Production stage
 FROM nginx:alpine
 
-# Copy all the enhanced directory files
-COPY index.html /usr/share/nginx/html/index.html
+# Copy built React app
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy static HTML files for backward compatibility
 COPY about.html /usr/share/nginx/html/about.html
 COPY sponsors.html /usr/share/nginx/html/sponsors.html
 
