@@ -13,8 +13,6 @@ services:
       - SUPPORT_EMAIL=support@earthcare.network
       - ENABLE_DB_MIGRATIONS=true
       - PORT=3000
-    ports:
-      - "3000:3000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -74,8 +72,6 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
     networks:
       - earthcare-network
     healthcheck:
@@ -88,8 +84,6 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     networks:
       - earthcare-network
     healthcheck:
