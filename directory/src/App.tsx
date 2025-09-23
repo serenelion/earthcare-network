@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider, gql, useQuery } from '@apollo/client';
 import './App.css';
 
@@ -16,10 +16,10 @@ const client = new ApolloClient({
   },
 });
 
-// GraphQL query to fetch companies
+// GraphQL query to fetch companies - updated for Twenty CRM structure
 const GET_COMPANIES = gql`
   query GetCompanies($limit: Int) {
-    companies(first: $limit) {
+    objects(first: $limit, filter: { objectMetadataId: { eq: "company" } }) {
       edges {
         node {
           id
@@ -53,11 +53,93 @@ interface Company {
   updatedAt: string;
 }
 
+// Sample sustainable companies data for fallback
+const SAMPLE_COMPANIES: Company[] = [
+  {
+    id: '1',
+    name: 'TerraLux',
+    domainName: 'terra-lux.org',
+    employees: 45,
+    idealCustomerProfile: true,
+    linkedinLink: 'https://linkedin.com/company/terra-lux',
+    xLink: 'https://x.com/terra_lux',
+    annualRecurringRevenue: 2500000,
+    address: 'San Francisco, CA',
+    createdAt: '2024-01-15T00:00:00Z',
+    updatedAt: '2024-01-15T00:00:00Z'
+  },
+  {
+    id: '2',
+    name: 'GreenTech Innovations',
+    domainName: 'greentech.eco',
+    employees: 120,
+    idealCustomerProfile: true,
+    linkedinLink: 'https://linkedin.com/company/greentech-innovations',
+    annualRecurringRevenue: 8500000,
+    address: 'Austin, TX',
+    createdAt: '2024-02-20T00:00:00Z',
+    updatedAt: '2024-02-20T00:00:00Z'
+  },
+  {
+    id: '3',
+    name: 'Sustainable Supply Co',
+    domainName: 'sustainsupply.com',
+    employees: 78,
+    idealCustomerProfile: false,
+    linkedinLink: 'https://linkedin.com/company/sustainable-supply',
+    annualRecurringRevenue: 3200000,
+    address: 'Portland, OR',
+    createdAt: '2024-03-10T00:00:00Z',
+    updatedAt: '2024-03-10T00:00:00Z'
+  },
+  {
+    id: '4',
+    name: 'Planet Positive',
+    domainName: 'planetpositive.org',
+    employees: 25,
+    idealCustomerProfile: true,
+    linkedinLink: 'https://linkedin.com/company/planet-positive',
+    xLink: 'https://x.com/planetpositive',
+    annualRecurringRevenue: 1200000,
+    address: 'Boulder, CO',
+    createdAt: '2024-04-05T00:00:00Z',
+    updatedAt: '2024-04-05T00:00:00Z'
+  },
+  {
+    id: '5',
+    name: 'EcoVentures',
+    domainName: 'ecoventures.green',
+    employees: 15,
+    idealCustomerProfile: false,
+    linkedinLink: 'https://linkedin.com/company/ecoventures',
+    annualRecurringRevenue: 800000,
+    address: 'Seattle, WA',
+    createdAt: '2024-05-12T00:00:00Z',
+    updatedAt: '2024-05-12T00:00:00Z'
+  },
+  {
+    id: '6',
+    name: 'Carbon Neutral Corp',
+    domainName: 'carbonneutral.biz',
+    employees: 200,
+    idealCustomerProfile: true,
+    linkedinLink: 'https://linkedin.com/company/carbon-neutral-corp',
+    xLink: 'https://x.com/carbonneutral',
+    annualRecurringRevenue: 15000000,
+    address: 'New York, NY',
+    createdAt: '2024-06-01T00:00:00Z',
+    updatedAt: '2024-06-01T00:00:00Z'
+  }
+];
+
 const CompanyGrid = () => {
   const { loading, error, data } = useQuery(GET_COMPANIES, {
     variables: { limit: 50 },
     errorPolicy: 'all'
   });
+
+  // Use sample data as fallback when API is not available
+  const companies: Company[] = data?.objects?.edges?.map((edge: any) => edge.node) || SAMPLE_COMPANIES;
 
   if (loading) return (
     <div className="loading">
@@ -66,65 +148,28 @@ const CompanyGrid = () => {
     </div>
   );
 
-  if (error) {
-    console.log('GraphQL Error:', error);
-    return (
-      <div className="error">
-        <h3>🌱 Growing the Directory</h3>
-        <p>We're currently building our network of sustainable companies.</p>
-        <p>Check back soon as we add more eco-conscious businesses!</p>
-        <div className="mock-companies">
-          <h4>Featured Sustainable Companies:</h4>
-          <div className="company-grid">
-            {[
-              { name: "TerraLux", domain: "terra-lux.org", description: "Regenerative Technology Solutions" },
-              { name: "GreenTech Innovations", domain: "greentech.eco", description: "Clean Energy Systems" },
-              { name: "Sustainable Supply Co", domain: "sustainsupply.com", description: "Eco-Friendly Products" },
-              { name: "Planet Positive", domain: "planetpositive.org", description: "Environmental Consulting" },
-              { name: "EcoVentures", domain: "ecoventures.green", description: "Impact Investment" },
-              { name: "Carbon Neutral Corp", domain: "carbonneutral.biz", description: "Carbon Offset Solutions" }
-            ].map((company, index) => (
-              <div key={index} className="company-card mock">
-                <h3>{company.name}</h3>
-                <p className="domain">{company.domain}</p>
-                <p className="description">{company.description}</p>
-                <div className="tags">
-                  <span className="tag sustainable">🌿 Sustainable</span>
-                  <span className="tag verified">✅ Verified</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const companies: Company[] = data?.companies?.edges?.map((edge: any) => edge.node) || [];
-
   return (
     <div className="companies-section">
       <div className="companies-header">
         <h2>🌍 EarthCare Network Directory</h2>
         <p>Discover {companies.length} sustainable companies building a better world</p>
+        {error && (
+          <div className="api-notice">
+            <p>📡 Showing sample data - CRM integration in progress</p>
+          </div>
+        )}
       </div>
       
-      {companies.length === 0 ? (
-        <div className="empty-state">
-          <h3>🌱 Building Our Network</h3>
-          <p>We're actively growing our directory of sustainable companies.</p>
-          <a href={process.env.REACT_APP_CRM_BASE_URL || 'https://crm.app.earthcare.network'} 
-             className="cta-button"
-             target="_blank" 
-             rel="noopener noreferrer">
-            Join the Network →
-          </a>
-        </div>
-      ) : (
-        <div className="company-grid">
-          {companies.map((company) => (
-            <div key={company.id} className="company-card">
-              <div className="company-header">
+      <div className="company-grid">
+        {companies.map((company) => (
+          <div key={company.id} className="company-card">
+            <div className="company-header">
+              <div className="company-logo">
+                <div className="logo-placeholder">
+                  {company.name.charAt(0).toUpperCase()}
+                </div>
+              </div>
+              <div className="company-info">
                 <h3>{company.name}</h3>
                 {company.domainName && (
                   <a href={`https://${company.domainName}`} 
@@ -135,44 +180,62 @@ const CompanyGrid = () => {
                   </a>
                 )}
               </div>
-              
-              <div className="company-details">
-                {company.employees && (
-                  <p><strong>Employees:</strong> {company.employees}</p>
-                )}
-                {company.annualRecurringRevenue && (
-                  <p><strong>ARR:</strong> ${company.annualRecurringRevenue.toLocaleString()}</p>
-                )}
-                {company.address && (
-                  <p><strong>Location:</strong> {company.address}</p>
-                )}
-              </div>
+            </div>
+            
+            <div className="company-details">
+              {company.employees && (
+                <div className="detail-item">
+                  <span className="detail-icon">👥</span>
+                  <span className="detail-label">Team Size:</span>
+                  <span className="detail-value">{company.employees.toLocaleString()}</span>
+                </div>
+              )}
+              {company.annualRecurringRevenue && (
+                <div className="detail-item">
+                  <span className="detail-icon">💰</span>
+                  <span className="detail-label">ARR:</span>
+                  <span className="detail-value">${(company.annualRecurringRevenue / 1000000).toFixed(1)}M</span>
+                </div>
+              )}
+              {company.address && (
+                <div className="detail-item">
+                  <span className="detail-icon">📍</span>
+                  <span className="detail-label">Location:</span>
+                  <span className="detail-value">{company.address}</span>
+                </div>
+              )}
+            </div>
 
-              <div className="company-links">
-                {company.linkedinLink && (
-                  <a href={company.linkedinLink} target="_blank" rel="noopener noreferrer">
-                    LinkedIn
-                  </a>
-                )}
-                {company.xLink && (
-                  <a href={company.xLink} target="_blank" rel="noopener noreferrer">
-                    Twitter/X
-                  </a>
-                )}
-              </div>
+            <div className="company-links">
+              {company.linkedinLink && (
+                <a href={company.linkedinLink} target="_blank" rel="noopener noreferrer" className="social-link linkedin">
+                  <span className="social-icon">💼</span>
+                  LinkedIn
+                </a>
+              )}
+              {company.xLink && (
+                <a href={company.xLink} target="_blank" rel="noopener noreferrer" className="social-link twitter">
+                  <span className="social-icon">🐦</span>
+                  Twitter/X
+                </a>
+              )}
+            </div>
 
-              <div className="company-meta">
-                <span className="joined">
-                  Joined: {new Date(company.createdAt).toLocaleDateString()}
-                </span>
+            <div className="company-meta">
+              <div className="company-tags">
+                <span className="tag sustainable">🌿 Sustainable</span>
+                <span className="tag verified">✅ Verified</span>
                 {company.idealCustomerProfile && (
                   <span className="tag icp">🎯 Key Partner</span>
                 )}
               </div>
+              <span className="joined">
+                Joined {new Date(company.createdAt).toLocaleDateString()}
+              </span>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -184,14 +247,48 @@ const App = () => {
         <header className="App-header">
           <div className="hero-section">
             <div className="hero-content">
-              <h1>🌍 EarthCare Network</h1>
-              <p className="tagline">Humanity's New Earth Economy Is Rising</p>
-              <p className="description">
-                Discover and connect with sustainable companies building a regenerative future
-              </p>
+              <div className="brand-section">
+                <div className="spatial-network-badge">
+                  <span className="badge-text">Powered by</span>
+                  <a href="https://thespatialnetwork.net" target="_blank" rel="noopener noreferrer" className="spatial-link">
+                    The Spatial Network
+                  </a>
+                </div>
+                <h1>🌍 EarthCare Network</h1>
+                <p className="tagline">Humanity's New Earth Economy Is Rising</p>
+                <p className="description">
+                  Discover and connect with sustainable companies building a regenerative future. 
+                  Join the ecoluxury movement transforming our planet.
+                </p>
+                <div className="hero-stats">
+                  <div className="stat">
+                    <span className="stat-number">6+</span>
+                    <span className="stat-label">Companies</span>
+                  </div>
+                  <div className="stat">
+                    <span className="stat-number">$30M+</span>
+                    <span className="stat-label">Combined ARR</span>
+                  </div>
+                  <div className="stat">
+                    <span className="stat-number">500+</span>
+                    <span className="stat-label">Employees</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="earth-animation">
-              <div className="earth"></div>
+            <div className="hero-visual">
+              <div className="spatial-grid">
+                <div className="grid-line horizontal"></div>
+                <div className="grid-line vertical"></div>
+                <div className="floating-elements">
+                  <div className="element element-1">🌱</div>
+                  <div className="element element-2">♻️</div>
+                  <div className="element element-3">🌿</div>
+                  <div className="element element-4">🌍</div>
+                  <div className="element element-5">⚡</div>
+                  <div className="element element-6">💚</div>
+                </div>
+              </div>
             </div>
           </div>
         </header>
@@ -204,7 +301,8 @@ const App = () => {
           <div className="footer-content">
             <div className="footer-section">
               <h3>🌱 About EarthCare Network</h3>
-              <p>Connecting sustainable businesses and conscious consumers for planetary transformation.</p>
+              <p>Connecting sustainable businesses and conscious consumers for planetary transformation. 
+                 Part of The Spatial Network's ecoluxury ecosystem.</p>
             </div>
             <div className="footer-section">
               <h3>🔗 Quick Links</h3>
@@ -212,15 +310,18 @@ const App = () => {
                 <li><a href="/about.html">About Us</a></li>
                 <li><a href="/sponsors.html">Sponsors</a></li>
                 <li><a href={process.env.REACT_APP_CRM_BASE_URL || 'https://crm.app.earthcare.network'} target="_blank" rel="noopener noreferrer">Join Network</a></li>
+                <li><a href="https://thespatialnetwork.net" target="_blank" rel="noopener noreferrer">The Spatial Network</a></li>
               </ul>
             </div>
             <div className="footer-section">
               <h3>🤝 Partnership</h3>
               <p>Founding Sponsor: <a href="https://terra-lux.org" target="_blank" rel="noopener noreferrer">TerraLux</a></p>
+              <p>Powered by: <a href="https://thespatialnetwork.net" target="_blank" rel="noopener noreferrer">The Spatial Network</a></p>
             </div>
           </div>
           <div className="footer-bottom">
             <p>&copy; 2025 EarthCare Network. Building a sustainable future together.</p>
+            <p className="spatial-credit">Part of The Spatial Network's ecoluxury ecosystem</p>
           </div>
         </footer>
       </div>
