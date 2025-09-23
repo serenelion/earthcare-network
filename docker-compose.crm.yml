@@ -1,5 +1,5 @@
 services:
-  # Twenty CRM Server
+  # Twenty CRM Server (Dokploy Deployment)
   twenty-server:
     image: twentycrm/twenty:latest
     restart: unless-stopped
@@ -25,11 +25,11 @@ services:
     volumes:
       - twenty-server-data:/app/packages/twenty-server/.local-storage
 
-  # Twenty CRM Worker  
+  # Twenty CRM Worker (Background Jobs)
   twenty-worker:
     image: twentycrm/twenty:latest
     restart: unless-stopped
-    command: yarn worker:prod
+    command: ["node", "dist/src/queue-worker/queue-worker"]
     environment:
       - NODE_ENV=production
       - SERVER_URL=https://crm.app.earthcare.network
@@ -47,21 +47,6 @@ services:
       - earthcare-network
     volumes:
       - twenty-server-data:/app/packages/twenty-server/.local-storage
-
-  # EarthCare Directory (React App)
-  directory:
-    build:
-      context: ./directory
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    environment:
-      - REACT_APP_CRM_API_URL=https://crm.app.earthcare.network/graphql
-      - REACT_APP_CRM_BASE_URL=https://crm.app.earthcare.network
-      - NODE_ENV=production
-    ports:
-      - "3003:80"
-    networks:
-      - earthcare-network
 
   # PostgreSQL Database
   postgres:

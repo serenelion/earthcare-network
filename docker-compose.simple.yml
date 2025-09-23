@@ -1,11 +1,14 @@
 services:
-  # EarthCare Directory - Static Site (Working)
+  # EarthCare Directory (React App) - Working Service
   directory:
     build:
       context: ./directory
       dockerfile: Dockerfile
-    container_name: earthcare-directory
     restart: unless-stopped
+    environment:
+      - REACT_APP_CRM_API_URL=https://crm.app.earthcare.network/graphql
+      - REACT_APP_CRM_BASE_URL=https://crm.app.earthcare.network
+      - NODE_ENV=production
     ports:
       - "3003:80"
     networks:
@@ -14,7 +17,6 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgis/postgis:16-3.4-alpine
-    container_name: earthcare-postgres
     restart: unless-stopped
     environment:
       - POSTGRES_DB=twenty
@@ -36,7 +38,6 @@ services:
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: earthcare-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
